@@ -3,6 +3,7 @@ package nucleus.view;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import nucleus.factory.PresenterFactory;
 import nucleus.factory.ReflectionPresenterFactory;
@@ -42,7 +43,7 @@ public abstract class NucleusFragmentActivity<P extends Presenter> extends Fragm
     /**
      * Returns a current attached presenter.
      * This method is guaranteed to return a non-null value between
-     * onResume/onPause and onAttachedToWindow/onDetachedFromWindow calls
+     * onCreate/onDestroy calls
      * if the presenter factory returns a non-null value.
      *
      * @return a currently attached presenter or null.
@@ -56,6 +57,8 @@ public abstract class NucleusFragmentActivity<P extends Presenter> extends Fragm
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null)
             presenterDelegate.onRestoreInstanceState(savedInstanceState.getBundle(PRESENTER_STATE_KEY));
+
+        presenterDelegate.onTakeView(this);
     }
 
     @Override
@@ -65,20 +68,19 @@ public abstract class NucleusFragmentActivity<P extends Presenter> extends Fragm
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        presenterDelegate.onResume(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        presenterDelegate.onDropView();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
+        presenterDelegate.onDropView();
         presenterDelegate.onDestroy(!isChangingConfigurations());
+    }
+
+    @Override
+    public void onBackPressed() {
+        try {
+            super.onBackPressed();
+        } catch (IllegalStateException e) {
+            supportFinishAfterTransition();
+            Log.e("NucleusActivity", toString(), e);
+        }
     }
 }

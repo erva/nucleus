@@ -327,14 +327,13 @@ public class RxPresenter<View> extends Presenter<View> {
     @CallSuper
     @Override
     protected void onDropView() {
+        if (subscriptions.hasSubscriptions() && !subscriptions.isUnsubscribed()) subscriptions.clear();
         views.onNext(null);
     }
 
     /**
      * Please, use restartableXX and deliverXX methods for pushing data from RxPresenter into View.
      */
-    @Deprecated
-    @Nullable
     @Override
     public View getView() {
         return super.getView();

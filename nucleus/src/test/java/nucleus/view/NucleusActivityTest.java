@@ -41,10 +41,6 @@ public class NucleusActivityTest {
 
     @RequiresPresenter(TestPresenter.class)
     public static class TestView extends NucleusActivity {
-        @Override
-        protected void onDestroy() {
-            super.onDestroy();
-        }
     }
 
     public void setUpIsFinishing(boolean b) {
@@ -78,8 +74,6 @@ public class NucleusActivityTest {
         tested = spy(VIEW_CLASS);
         suppress(method(BASE_VIEW_CLASS, "onCreate", Bundle.class));
         suppress(method(BASE_VIEW_CLASS, "onSaveInstanceState", Bundle.class));
-        suppress(method(BASE_VIEW_CLASS, "onResume"));
-        suppress(method(BASE_VIEW_CLASS, "onPause"));
         suppress(method(BASE_VIEW_CLASS, "onDestroy"));
 
         setUpIsFinishing(false);
@@ -97,24 +91,22 @@ public class NucleusActivityTest {
             }
         }));
         verify(mockDelegate, times(1)).getPresenter();
+        verify(mockDelegate, times(1)).onTakeView(tested);
         verifyNoMoreInteractions(mockPresenter, mockDelegate, mockFactory);
     }
 
     @Test
     public void testLifecycle() throws Exception {
         tested.onCreate(null);
-        tested.onResume();
-        verify(mockDelegate, times(1)).onResume(tested);
-        tested.onPause();
+        verify(mockDelegate, times(1)).onTakeView(tested);
+
+        tested.onSaveInstanceState(BundleMock.mock());
+        verify(mockDelegate, times(1)).onSaveInstanceState();
+
         tested.onDestroy();
         verify(mockDelegate, times(1)).onDropView();
         verify(mockDelegate, times(1)).onDestroy(false);
-        tested.onSaveInstanceState(BundleMock.mock());
-        verify(mockDelegate, times(1)).onSaveInstanceState();
-        tested.onPause();
-        tested.onDestroy();
-        verify(mockDelegate, times(2)).onDropView();
-        verify(mockDelegate, times(2)).onDestroy(false);
+
         verifyNoMoreInteractions(mockPresenter, mockDelegate, mockFactory);
     }
 
@@ -137,7 +129,6 @@ public class NucleusActivityTest {
     public void testDestroy() throws Exception {
         tested.onCreate(null);
         setUpIsFinishing(true);
-        tested.onPause();
         tested.onDestroy();
         verify(mockDelegate, times(1)).onDropView();
         verify(mockDelegate, times(1)).onDestroy(true);

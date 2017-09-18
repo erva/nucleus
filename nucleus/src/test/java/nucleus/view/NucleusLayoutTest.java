@@ -122,7 +122,7 @@ public class NucleusLayoutTest {
     @Test
     public void testLifecycle() throws Exception {
         tested.onAttachedToWindow();
-        verify(mockDelegate, times(1)).onResume(tested);
+        verify(mockDelegate, times(1)).onTakeView(tested);
         tested.onDetachedFromWindow();
         verify(mockDelegate, times(1)).onDropView();
         verify(mockDelegate, times(1)).onDestroy(false);

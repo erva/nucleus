@@ -3,6 +3,7 @@ package nucleus.view;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import nucleus.factory.PresenterFactory;
 import nucleus.factory.ReflectionPresenterFactory;
@@ -42,7 +43,7 @@ public abstract class NucleusAppCompatActivity<P extends Presenter> extends AppC
     /**
      * Returns a current attached presenter.
      * This method is guaranteed to return a non-null value between
-     * onResume/onPause and onAttachedToWindow/onDetachedFromWindow calls
+     * onCreate/onDestroy calls
      * if the presenter factory returns a non-null value.
      *
      * @return a currently attached presenter or null.
@@ -56,6 +57,8 @@ public abstract class NucleusAppCompatActivity<P extends Presenter> extends AppC
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null)
             presenterDelegate.onRestoreInstanceState(savedInstanceState.getBundle(PRESENTER_STATE_KEY));
+
+        presenterDelegate.onTakeView(this);
     }
 
     @Override
@@ -79,6 +82,17 @@ public abstract class NucleusAppCompatActivity<P extends Presenter> extends AppC
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        presenterDelegate.onDropView();
         presenterDelegate.onDestroy(!isChangingConfigurations());
+    }
+
+    @Override
+    public void onBackPressed() {
+        try {
+            super.onBackPressed();
+        } catch (IllegalStateException e) {
+            supportFinishAfterTransition();
+            Log.e("NucleusActivity", toString(), e);
+        }
     }
 }

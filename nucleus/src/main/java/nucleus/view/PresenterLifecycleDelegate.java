@@ -3,6 +3,7 @@ package nucleus.view;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import nucleus.factory.PresenterFactory;
 import nucleus.factory.PresenterStorage;
@@ -41,7 +42,7 @@ public final class PresenterLifecycleDelegate<P extends Presenter> {
      */
     public void setPresenterFactory(@Nullable PresenterFactory<P> presenterFactory) {
         if (presenter != null)
-            throw new IllegalArgumentException("setPresenterFactory() should be called before onResume()");
+            throw new IllegalArgumentException("setPresenterFactory() should be called before onTakeView()");
         this.presenterFactory = presenterFactory;
     }
 
@@ -64,7 +65,9 @@ public final class PresenterLifecycleDelegate<P extends Presenter> {
     }
 
     /**
-     * {@link android.app.Activity#onSaveInstanceState(Bundle)}, {@link android.app.Fragment#onSaveInstanceState(Bundle)}, {@link android.view.View#onSaveInstanceState()}.
+     * {@link android.app.Activity#onSaveInstanceState(Bundle)},
+     * {@link android.app.Fragment#onSaveInstanceState(Bundle)},
+     * {@link android.view.View#onSaveInstanceState()}.
      */
     public Bundle onSaveInstanceState() {
         Bundle bundle = new Bundle();
@@ -79,20 +82,22 @@ public final class PresenterLifecycleDelegate<P extends Presenter> {
     }
 
     /**
-     * {@link android.app.Activity#onCreate(Bundle)}, {@link android.app.Fragment#onCreate(Bundle)}, {@link android.view.View#onRestoreInstanceState(Parcelable)}.
+     * {@link android.app.Activity#onCreate(Bundle)},
+     * {@link android.app.Fragment#onCreate(Bundle)},
+     * {@link android.view.View#onRestoreInstanceState(Parcelable)}.
      */
     public void onRestoreInstanceState(Bundle presenterState) {
         if (presenter != null)
-            throw new IllegalArgumentException("onRestoreInstanceState() should be called before onResume()");
+            throw new IllegalArgumentException("onRestoreInstanceState() should be called before onTakeView()");
         this.bundle = ParcelFn.unmarshall(ParcelFn.marshall(presenterState));
     }
 
     /**
-     * {@link android.app.Activity#onResume()},
-     * {@link android.app.Fragment#onResume()},
+     * {@link android.app.Activity#onCreate(Bundle)} ()},
+     * {@link android.app.Fragment#onViewCreated(View, Bundle)},
      * {@link android.view.View#onAttachedToWindow()}
      */
-    public void onResume(Object view) {
+    public void onTakeView(Object view) {
         getPresenter();
         if (presenter != null && !presenterHasView) {
             //noinspection unchecked
@@ -115,7 +120,7 @@ public final class PresenterLifecycleDelegate<P extends Presenter> {
 
     /**
      * {@link android.app.Activity#onDestroy()},
-     * {@link android.app.Fragment#onDestroy()},
+     * {@link android.app.Fragment#onDestroyView()},
      * {@link android.view.View#onDetachedFromWindow()}
      */
     public void onDestroy(boolean isFinal) {

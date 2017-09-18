@@ -121,7 +121,7 @@ public class PresenterLifecycleDelegateTest {
         assertNull(delegate.getPresenter());
         assertNotNull(delegate.onSaveInstanceState());
         delegate.setPresenterFactory(null);
-        delegate.onResume(1);
+        delegate.onTakeView(1);
         delegate.onDropView();
         delegate.onDestroy(false);
         delegate.onDestroy(true);
@@ -142,7 +142,7 @@ public class PresenterLifecycleDelegateTest {
     @Test
     public void saveRestore() throws Exception {
         PresenterLifecycleDelegate<Presenter> delegate = new PresenterLifecycleDelegate<>(factory);
-        delegate.onResume(1);
+        delegate.onTakeView(1);
         Bundle bundle = delegate.onSaveInstanceState();
 
         delegate = new PresenterLifecycleDelegate<>(factory);

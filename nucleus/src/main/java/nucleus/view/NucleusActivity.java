@@ -42,7 +42,7 @@ public abstract class NucleusActivity<P extends Presenter> extends Activity impl
     /**
      * Returns a current attached presenter.
      * This method is guaranteed to return a non-null value between
-     * onResume/onPause and onAttachedToWindow/onDetachedFromWindow calls
+     * onCreate/onDestroy calls
      * if the presenter factory returns a non-null value.
      *
      * @return a currently attached presenter or null.
@@ -56,6 +56,8 @@ public abstract class NucleusActivity<P extends Presenter> extends Activity impl
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null)
             presenterDelegate.onRestoreInstanceState(savedInstanceState.getBundle(PRESENTER_STATE_KEY));
+
+        presenterDelegate.onTakeView(this);
     }
 
     @Override
@@ -65,20 +67,9 @@ public abstract class NucleusActivity<P extends Presenter> extends Activity impl
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        presenterDelegate.onResume(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        presenterDelegate.onDropView();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
+        presenterDelegate.onDropView();
         presenterDelegate.onDestroy(!isChangingConfigurations());
     }
 }

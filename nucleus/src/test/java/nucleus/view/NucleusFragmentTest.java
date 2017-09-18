@@ -3,6 +3,7 @@ package nucleus.view;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.view.View;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -76,11 +77,9 @@ public class NucleusFragmentTest {
 
         tested = spy(VIEW_CLASS);
         suppress(method(BASE_VIEW_CLASS, "onCreate", Bundle.class));
+        suppress(method(BASE_VIEW_CLASS, "onViewCreated", View.class, Bundle.class));
         suppress(method(BASE_VIEW_CLASS, "onSaveInstanceState", Bundle.class));
-        suppress(method(BASE_VIEW_CLASS, "onResume"));
-        suppress(method(BASE_VIEW_CLASS, "onPause"));
         suppress(method(BASE_VIEW_CLASS, "onDestroyView"));
-        suppress(method(BASE_VIEW_CLASS, "onDestroy"));
 
         setUpIsFinishing(false);
     }
@@ -102,16 +101,16 @@ public class NucleusFragmentTest {
 
     @Test
     public void testLifecycle() throws Exception {
-        tested.onCreate(null);
-        tested.onResume();
-        verify(mockDelegate, times(1)).onResume(tested);
-        tested.onPause();
-        tested.onDestroyView();
-        verify(mockDelegate, times(1)).onDropView();
+        tested.onViewCreated(null, null);
+        verify(mockDelegate, times(1)).onTakeView(tested);
+
         tested.onSaveInstanceState(BundleMock.mock());
         verify(mockDelegate, times(1)).onSaveInstanceState();
-        tested.onDestroy();
+
+        tested.onDestroyView();
+        verify(mockDelegate, times(1)).onDropView();
         verify(mockDelegate, times(1)).onDestroy(false);
+
         verifyNoMoreInteractions(mockPresenter, mockDelegate, mockFactory);
     }
 
@@ -134,8 +133,7 @@ public class NucleusFragmentTest {
     public void testDestroy() throws Exception {
         tested.onCreate(null);
         setUpIsFinishing(true);
-        tested.onPause();
-        tested.onDestroy();
+        tested.onDestroyView();
         verify(mockDelegate, times(1)).onDestroy(true);
     }
 }

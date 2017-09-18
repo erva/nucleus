@@ -1,7 +1,9 @@
 package nucleus.view;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import nucleus.factory.PresenterFactory;
 import nucleus.factory.ReflectionPresenterFactory;
@@ -40,7 +42,7 @@ public abstract class NucleusSupportFragment<P extends Presenter> extends Fragme
     /**
      * Returns a current attached presenter.
      * This method is guaranteed to return a non-null value between
-     * onResume/onPause and onAttachedToWindow/onDetachedFromWindow calls
+     * onViewCreated/onDestroyView calls
      * if the presenter factory returns a non-null value.
      *
      * @return a currently attached presenter or null.
@@ -63,20 +65,15 @@ public abstract class NucleusSupportFragment<P extends Presenter> extends Fragme
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        presenterDelegate.onResume(this);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenterDelegate.onTakeView(this);
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroyView() {
         presenterDelegate.onDropView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
         presenterDelegate.onDestroy(!getActivity().isChangingConfigurations());
+        super.onDestroyView();
     }
 }

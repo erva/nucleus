@@ -1,5 +1,12 @@
 # Changelog
 
+### 09.08.2017, Version: 5.0.0
+
+* Fork https://github.com/konmik/nucleus
+* Change lifecycle. See `nucleus.view.PresenterLifecycleDelegate` 
+* Updated tests
+* Removed `NucleusActionBarActivity`. Use `NucleusAppCompatActivity`
+
 ### 11.07.2016, Version: 4.0.0
 
 * Now activities and fragments drop presenters during onPause instead of onDestroy.

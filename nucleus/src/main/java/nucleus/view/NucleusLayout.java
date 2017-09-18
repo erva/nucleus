@@ -59,7 +59,7 @@ public class NucleusLayout<P extends Presenter> extends FrameLayout implements V
     /**
      * Returns a current attached presenter.
      * This method is guaranteed to return a non-null value between
-     * onResume/onPause and onAttachedToWindow/onDetachedFromWindow calls
+     * onAttachedToWindow/onDetachedFromWindow calls
      * if the presenter factory returns a non-null value.
      *
      * @return a currently attached presenter or null.
@@ -101,7 +101,7 @@ public class NucleusLayout<P extends Presenter> extends FrameLayout implements V
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (!isInEditMode())
-            presenterDelegate.onResume(this);
+            presenterDelegate.onTakeView(this);
     }
 
     @Override
