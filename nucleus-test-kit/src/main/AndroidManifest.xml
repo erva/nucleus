@@ -1,6 +1,3 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="info.android15.nucleustestkit">
-
-    <application android:allowBackup="true">
-    </application>
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="erva.io.nucleustestkit">
+    <application android:allowBackup="true"/>
 </manifest>

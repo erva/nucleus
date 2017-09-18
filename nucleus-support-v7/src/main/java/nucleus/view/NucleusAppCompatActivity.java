@@ -70,7 +70,7 @@ public abstract class NucleusAppCompatActivity<P extends Presenter> extends AppC
     @Override
     protected void onResume() {
         super.onResume();
-        presenterDelegate.onResume(this);
+        presenterDelegate.onTakeView(this);
     }
 
     @Override

@@ -37,10 +37,9 @@ repositories {
 dependencies {
     retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
 
-    def nucleusVersion = '3.0.0'
-    compile "info.android15.nucleus:nucleus:$nucleusVersion"
-    compile "info.android15.nucleus:nucleus-support-v4:$nucleusVersion"
-    compile "info.android15.nucleus:nucleus-support-v7:$nucleusVersion"
+    compile project(path: ':nucleus')
+    compile project(path: ':nucleus-support-v4')
+    compile project(path: ':nucleus-support-v7')
 
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'io.reactivex:rxandroid:0.24.0'

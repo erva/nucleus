@@ -6,6 +6,7 @@
 * Change lifecycle. See `nucleus.view.PresenterLifecycleDelegate` 
 * Updated tests
 * Removed `NucleusActionBarActivity`. Use `NucleusAppCompatActivity`
+* Change package to `erva.io`
 
 ### 11.07.2016, Version: 4.0.0
 
